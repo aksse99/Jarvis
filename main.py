@@ -1,8 +1,16 @@
 import speech_recognition as sr
 import pyttsx3
+import datetime
+import wikipedia
+import pyjokes
+import pywhatkit
+
 
 listener = sr.Recognizer()
 engine = pyttsx3.init()
+engine.say("Jarvis here")
+engine.say("What can I do for you sir ")
+engine.runAndWait()
 
 
 def talk(text):
@@ -11,15 +19,15 @@ def talk(text):
 
 
 def take_command():
+
     try:
         with sr.Microphone() as source:
-            print('Listening....')
+            print('listening...')
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
-            if 'jarvis' in command:
-                command = command.replace('jarvis', '')
-                print(command)
+
+            print(command)
 
     except:
         pass
@@ -30,8 +38,28 @@ def run_jarvis():
     command = take_command()
     print(command)
     if 'play' in command:
-        talk('playing')
-        print('playing')
+        song = command.replace('play', '')
+        talk('playing' + song)
+        print(song)
+        pywhatkit.playonyt(song)
+
+    elif 'time' in command:
+        time = datetime.datetime.now().strftime('%I:%M %p')
+        print(time)
+        talk('Current time is ' + time)
+
+    elif 'who is' in command:
+        person = command.replace('who is', '')
+        info = wikipedia.summary(person, 3)
+        print(info)
+        talk(info)
+
+    elif 'joke' in command:
+        talk(pyjokes.get_joke())
+
+    else:
+        talk('Please say the command again.')
 
 
-run_jarvis()
+while True:
+    run_jarvis()
